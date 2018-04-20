@@ -35,6 +35,8 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+var routes_1 = require("./routes");
+app.use('/', routes_1.routes);
 server.listen(app.get("port"), function () {
     console.log(("App is running at http://localhost:%d in %s mode"), app.get("port"), app.get("env"));
     console.log("Press CTRL-C to stop\n");
