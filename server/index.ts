@@ -14,9 +14,12 @@ import * as bodyParser from "body-parser";
 import * as mongoose from "mongoose";
 import * as passport from "passport";
 
+import * as logger from "morgan";
+import * as errorHandler from "errorhandler";
+
 // MongooseDB
 // ----------------------------------------------------------------------------
-mongoose.connect("mongodb://localhost:27017/above22water");
+mongoose.connect("mongodb://localhost:27017/bullyAI");
 mongoose.connection.on("error", () => {
     console.log("MongoDB connection error. Please make sure MongoDB is running.");
     process.exit();
@@ -51,11 +54,33 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(logger("dev"));
+
+// Request Routing
+// ----------------------------------------------------------------------------
+// Always feel ashamed for doing this...
+// app.use("/",                            express.static(__dirname + "/../client/"));
+app.use(express.static('client'));
+
+app.all('*', (req, res, next) => {
+    console.log(req.path);
+    console.log(req.url);
+    console.log(req.originalUrl);
+    next();
+});
+
 // Normal Code
 // ----------------------------------------------------------------------------
 
+// Importing Passport configuration
+require("./config/passport")(passport); // Passport configuration
+
 import { routes } from "./routes";
-app.use('/', routes)
+import { accountRoutes } from "./api";
+app.use('/', routes);
+app.use('/account', accountRoutes);
+
+app.use(errorHandler());
 
 // Start Express server.
 // ----------------------------------------------------------------------------
