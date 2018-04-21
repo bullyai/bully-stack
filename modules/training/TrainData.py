@@ -3,13 +3,14 @@ from os import listdir
 from os.path import isfile, join
 import uuid
 
-class TrainedData:
+class Train:
     def __init__(self, gender):
         self.gender = gender
+        self.directory =  join('../../data/', gender)
         self.trained_data = []
 
     def get_all_files(self, directory):
-        all_files = [f for f in listdir(self.gender) if isfile(join(self.gender, f))]
+        all_files = [f for f in listdir(self.directory) if isfile(join(self.directory, f))]
         return all_files
 
     def read_file(self, directory):
@@ -34,11 +35,11 @@ class TrainedData:
         return file_name_split[0]
 
     def classify_insults(self, label, insults):
-        return [{
+        return { label: [{
             "id": uuid.uuid4().hex,
             "gender": self.gender,
             "insult": insult
-        } for insult in insults if len(insult) > 0]
+        } for insult in insults if len(insult) > 0]}
 
     def start_training(self):
         all_file_names = self.get_all_files(self.gender)
@@ -46,7 +47,7 @@ class TrainedData:
         for files in all_file_names:
             label = self.create_label(files)
 
-            file_directory = join(self.gender, files)
+            file_directory = join(self.directory, files)
 
             insults = self.read_file(file_directory)
 
