@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var passportLocal = require("passport-local");
-var account_1 = require("../database/account");
-var LocalStrategy = passportLocal.Strategy;
+const passportLocal = require("passport-local");
+const account_1 = require("../database/account");
+const LocalStrategy = passportLocal.Strategy;
 module.exports = function (passport) {
-    passport.serializeUser(function (account, done) {
+    passport.serializeUser((account, done) => {
         done(undefined, account.id);
     });
-    passport.deserializeUser(function (id, done) {
-        account_1.Account.findById(id, function (err, account) {
+    passport.deserializeUser((id, done) => {
+        account_1.Account.findById(id, (err, account) => {
             done(err, account);
         });
     });
@@ -26,13 +26,13 @@ module.exports = function (passport) {
                     return done(undefined, false, undefined);
                 }
                 else {
-                    var newUser_1 = new account_1.Account();
-                    newUser_1.username = username;
-                    newUser_1.password = newUser_1.generateHash(password);
-                    newUser_1.save(function (err) {
+                    const newUser = new account_1.Account();
+                    newUser.username = username;
+                    newUser.password = newUser.generateHash(password);
+                    newUser.save(function (err) {
                         if (err)
                             throw err;
-                        return done(undefined, newUser_1);
+                        return done(undefined, newUser);
                     });
                 }
             });

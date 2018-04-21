@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var mongoose = require("mongoose");
-var bcrypt = require("bcrypt-nodejs");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt-nodejs");
 exports.AccountSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     username: String,

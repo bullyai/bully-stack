@@ -1,16 +1,18 @@
 {
     "compilerOptions": {
         "sourceMap": true,
-        "outDir": "./dist",
+        "outDir": "./server/dist",
+        "jsx": "react",
         "preserveConstEnums": true,
         "removeComments": true,
         "module": "commonjs",
-        "target": "es5"
+        "target": "es2017"
     },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "./server/dist/**/*",
     ],
     "include": [
-        "./src/**/*",
+        "./server/**/*",
     ]
 }
