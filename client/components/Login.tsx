@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
-import { withCookies, Cookies } from 'react-cookie';
 
 // Styles
 import "./Login.less";
