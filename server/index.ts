@@ -9,21 +9,11 @@ const server = http.createServer(app);
 // ----------------------------------------------------------------------------
 import * as compression from "compression";
 import * as cookieParser from "cookie-parser";
-import * as session from "express-session";
 import * as bodyParser from "body-parser";
-import * as mongoose from "mongoose";
 import * as passport from "passport";
 
 import * as logger from "morgan";
 import * as errorHandler from "errorhandler";
-
-// MongooseDB
-// ----------------------------------------------------------------------------
-mongoose.connect("mongodb://localhost:27017/bullyAI");
-mongoose.connection.on("error", () => {
-    console.log("MongoDB connection error. Please make sure MongoDB is running.");
-    process.exit();
-});
 
 // Server Configuration
 // ----------------------------------------------------------------------------
@@ -35,21 +25,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // Cookie content decoding and parsing
 app.use(cookieParser());
-// Mounts the session store with an auto loader into MongooseDB
-const MongoStore = require("connect-mongo")(session);
-// Allows the session storage to be put into mongoose
-app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: "bullyAI-youfuckingsuck",
-    store: new MongoStore({
-        host: "127.0.0.1",
-        port: "27017",
-        db: "session",
-        url: "mongodb://localhost:27017/bullyAI",
-        autoReconnect: true
-    })
-}));
 // Starts the user account session
 app.use(passport.initialize());
 app.use(passport.session());
@@ -72,13 +47,10 @@ app.all('*', (req, res, next) => {
 // Normal Code
 // ----------------------------------------------------------------------------
 
-// Importing Passport configuration
-require("./config/passport")(passport); // Passport configuration
-
 import { routes } from "./routes";
-import { accountRoutes } from "./api";
+import { apiRoutes } from "./api";
 app.use('/', routes);
-app.use('/account', accountRoutes);
+app.use('/api', apiRoutes);
 
 app.use(errorHandler());
 
