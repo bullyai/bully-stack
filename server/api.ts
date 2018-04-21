@@ -42,7 +42,7 @@ apiRoutes.get('/users', async (req: Request, res: Response) => {
 apiRoutes.get('/active', async (req: Request, res: Response) => {
     res.json({
         success: true,
-        userIds: listActive(req.query.token)
+        users: listActive(req.query.token)
     });
 });
 
@@ -50,7 +50,7 @@ apiRoutes.get('/active', async (req: Request, res: Response) => {
 apiRoutes.put('/active/:userId', async (req: Request, res: Response) => {
     try {
         addActive(req.body.token, req.params.userId, {
-            tags: req.body.insecurities.toLowerCase().split(/\s+/) as string[],
+            tags: (req.body.insecurities + ' misc').toLowerCase().trim().split(/\s+/) as string[],
             gender: req.body.gender,
             info: await getUser(req.body.token, req.params.userId)
         });

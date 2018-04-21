@@ -4,6 +4,12 @@ import { Link } from "react-router-dom";
 // Styles
 import "./Home.less";
 
+interface UserData {
+    tags: string[];
+    gender: 'male' | 'female' | 'other';
+    info: UserInfo;
+}
+
 interface UserInfo {
     id: number;
     name: string;
@@ -40,46 +46,47 @@ class Title extends React.Component {
     }
 }
 
-class Dashboard extends React.Component<{},{error: any, isLoaded: boolean, users: UserInfo[]}> {
+class Dashboard extends React.Component<{},{error: any, isLoaded: boolean, users: UserData[]}> {
 
     constructor (props) {
         super(props);
         this.state = {
             error: undefined,
             isLoaded: false,
-            users: undefined
+            users: []
         };
     }
 
     componentDidMount() {
-        fetch("https://localhost:3000/api/user", {
-            method: 'POST',
-            body: `token=${localStorage.getItem('token')}`
+        fetch(`http://localhost:3000/api/active?token=${localStorage.getItem('token')}`, {
+            method: 'GET'
         })
         .then(res => res.json())
-        .then(
-            (result) => {
+        .then((result) => {
+                if (!result.success) throw result.error;
+
+                console.log(result.users);
+
                 this.setState({
                     isLoaded: true,
-                    users: result.user 
+                    users: result.users
                 });
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error
-                });
-            }
-        )
+            })
+            .catch(error => {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+        })
     }
 
     render() {
         return (
             localStorage.getItem('token') ?
             <div className="flex dashboard">
-                { this.state.isLoaded ? 
-                    this.state.users.map((user: UserInfo) => {
-                        return <ProjectCard userObj = {user} />
+                { this.state.isLoaded && this.state.users.length ?
+                    this.state.users.map((user: UserData) => {
+                        return <ProjectCard userObj = {user.info} />
                     })
                 : <Link to='/adduser' >
                     <div className="projectCard">
@@ -106,7 +113,7 @@ class ProjectCard extends React.Component<{userObj: UserInfo},{}> {
     render() {
         return (
             <Link to={'/adduser/' + this.props.userObj.id} >
-                <div className="projectCard">
+                <div className="projectCard" style={ { backgroundImage: 'url(' + this.props.userObj.photo || '' + ')', backgroundSize: 'cover' } }>
                     <div className="projectTitleContainer">
                         <div className="relativeContainer">
                             <span className="projectTitle">Project: {this.props.userObj.name}</span>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 // Styles
 import "./AddUser.less";
+import { Redirect } from 'react-router';
 
 interface UserInfo {
     id: number;
@@ -136,7 +137,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                     </div>
                     <form className="addUserForm">
                         <div className="row">
-                            { this.state.isSubmitted ? <div className="alert alert-success"><span>Yeet</span></div> : null }
+                            { this.state.isSubmitted ? <Redirect to="/" /> : null }
                         </div>
                         <div className="row">
                             <div className="col-12 col-md-6">
@@ -167,8 +168,6 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                             </div>
                             <div className="col-12 col-md-6">
                                 <img className="img-fluid rounded mx-auto d-block" src={this.state.selectedUser && this.state.selectedUser.photo ? this.state.selectedUser.photo : "http://via.placeholder.com/350x350"} />
-                                <hr />
-                                <button type="" className="btn btn-primary btn-block">Change Image</button>
                             </div>
                         </div>
                         <div className="row">

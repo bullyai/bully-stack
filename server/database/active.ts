@@ -12,7 +12,7 @@ const activeItems = new Map<string, Map<number, UserData>>();
 export function listActive(token: string) {
     const entry = activeItems.get(token);
     if (!entry) return [];
-    else return Array.from(entry);
+    else return Array.from(entry.values());
 }
 
 export function addActive(token: string, userId: number, data: UserData) {
