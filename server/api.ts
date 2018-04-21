@@ -1,7 +1,6 @@
 import { Router, Request, Response } from "express";
 import { getToken, getUser, listAvailableUsers } from './external/index';
 import { addActive, listActive, removeActive } from './database/active';
-const tagMap = require('../shared/map.json');
 
 const apiRoutes = Router();
 export { apiRoutes };
@@ -47,17 +46,12 @@ apiRoutes.get('/active', async (req: Request, res: Response) => {
     });
 });
 
-// POST parameters: {insecurty, token}
+// POST parameters: {insecurty, gender, token}
 apiRoutes.put('/active/:userId', async (req: Request, res: Response) => {
     try {
-        let tags = new Set<string>();
-        const insecurities = req.body.insecurities.toLowerCase().split(/\s+/);
-        for (const insecurity of insecurities) {
-            if (tagMap[insecurity]) tags.add(tagMap[insecurity]);
-        }
-
         addActive(req.body.token, req.params.userId, {
-            tags: Array.from(tags),
+            tags: req.body.insecurities.toLowerCase().split(/\s+/) as string[],
+            gender: req.body.gender,
             info: await getUser(req.body.token, req.params.userId)
         });
         res.json({ success: true });

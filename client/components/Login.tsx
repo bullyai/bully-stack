@@ -1,15 +1,21 @@
 import * as React from 'react';
+<<<<<<< HEAD
+=======
+import { Link } from "react-router-dom";
+>>>>>>> home-page-design
 
 // Styles
 import "./Login.less";
+import { Redirect } from 'react-router';
 
-export default class Login extends React.Component<{},{email: string, password: string, error?: string}> {
+export default class Login extends React.Component<{},{email: string, password: string, isDone: boolean, error?: string}> {
 
     constructor (props: any) {
         super(props);
         this.state = {
             email: "",
             password: "",
+            isDone: false,
             error: undefined
         }
     }
@@ -42,6 +48,7 @@ export default class Login extends React.Component<{},{email: string, password: 
                     if (!result.success) throw result.error;
                     console.log('oy');
                     localStorage.setItem('token', result.token);
+                    this.setState({ isDone: true });
                 })
             .catch(error => {
                 console.log(`Error in fetching token: \n\t ${error}`);
@@ -52,6 +59,7 @@ export default class Login extends React.Component<{},{email: string, password: 
     render() {
         return (
             <div className="container">
+                { this.state.isDone ? <Redirect to="/" /> : null }
                 <div className="row">
                     <div className="col-12 col-md-6 offset-md-3">
                         <h1>Login</h1>
