@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { instanceOf } from 'prop-types';
 
 import Navbar from "./Navbar";
 import AddUser from "./AddUser";
@@ -21,7 +22,7 @@ export default class App extends React.Component {
                 <Navbar>
                     <Route exact path="/" component={Home} />
                     <Route path="/adduser" component={AddUser} />
-                    <Route path="/login" component={AddUser} />
+                    <Route path="/login" component={Login} />
                 </Navbar>
             </Router>
         )

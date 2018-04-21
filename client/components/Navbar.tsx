@@ -21,6 +21,7 @@ export default class Navbar extends React.Component<{},{}> {
                         <ul>
                             <li><Link to="/">Home</Link></li>
                             <li><Link to="/adduser">Add User</Link></li>
+                            <li><Link to="/login">Login</Link></li>
                             {/* { navObject.array.forEach(element => {
                                 return<li><Link to={element.path}>{element.name.toString()}</Link></li>
                             }) } */}
