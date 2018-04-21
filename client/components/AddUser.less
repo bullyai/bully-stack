@@ -1,3 +1,5 @@
+@import "./../variables.less";
+
 .addUserTop {
     margin-top: 50px;
 }
@@ -86,12 +88,12 @@ h4 {
 }
 .tgl-flip + .tgl-btn:after {
   content: attr(data-tg-on);
-  background: #02C66F;
+  background: @colour-light;
   -webkit-transform: rotateY(-180deg);
           transform: rotateY(-180deg);
 }
 .tgl-flip + .tgl-btn:before {
-  background: #FF3A19;
+  background: @colour-grey;
   content: attr(data-tg-off);
 }
 .tgl-flip + .tgl-btn:active:before {
@@ -106,7 +108,7 @@ h4 {
   -webkit-transform: rotateY(0);
           transform: rotateY(0);
   left: 0;
-  background: #7FC6A6;
+  background: @colour-light;
 }
 .tgl-flip:checked + .tgl-btn:active:after {
   -webkit-transform: rotateY(20deg);

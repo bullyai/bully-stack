@@ -45,11 +45,11 @@ export function removeActive(token: string, userId: number) {
 }
 
 export function doCron() {
-    console.log('Doing cron!');
+    console.log('[CRON] Checking to send');
     activeItems.forEach((users, token) => {
         users.forEach((userData, userId) => {
             const pickedTag = userData.tags[Math.floor(Math.random() * userData.tags.length)];
-            console.log('Using tag ' + pickedTag + ' for user ' + userData.info.name + ' [out of ' + userData.tags + ']');
+            console.log('[SMS] Using tag ' + pickedTag + ' for user ' + userData.info.name + ' [out of ' + userData.tags + ']');
             const tagEntries = insecurities[pickedTag];
 
             let pickedItem: { gender: string, id: string, insult: string };
@@ -58,8 +58,9 @@ export function doCron() {
             } while (userData.gender !== 'other' && pickedItem.gender !== userData.gender);
 
             // send the user an SMS message
-            console.log('Sending SMS with text: ' + pickedItem.insult);
-            sendSms(token, [userId], pickedItem.insult + '\n\nWith Love,');
+            console.log('[SMS] Sending SMS with text: ');
+            console.log('\t\t' + pickedItem.insult);
+            // sendSms(token, [userId], pickedItem.insult + '\n\nWith Love,');
         });
     });
 }

@@ -54,7 +54,7 @@ export default class Login extends React.Component<{},{email: string, password: 
 
     render() {
         return (
-            <div className="container">
+            <div className="container loginTop">
                 { this.state.isDone ? <Redirect to="/" /> : null }
                 <div className="row">
                     <div className="col-12 col-md-6 offset-md-3">

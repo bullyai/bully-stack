@@ -39,13 +39,6 @@ app.use(logger("dev"));
 // app.use("/",                            express.static(__dirname + "/../client/"));
 app.use(express.static('client'));
 
-app.all('*', (req, res, next) => {
-    console.log(req.path);
-    console.log(req.url);
-    console.log(req.originalUrl);
-    next();
-});
-
 // Normal Code
 // ----------------------------------------------------------------------------
 
@@ -60,8 +53,8 @@ app.use(errorHandler());
 // Start Express server.
 // ----------------------------------------------------------------------------
 server.listen(app.get("port"), () => {
-    console.log(("App is running at http://localhost:%d in %s mode"), app.get("port"), app.get("env"));
-    console.log("Press CTRL-C to stop\n");
+    console.log(("[APP] App is running at http://localhost:%d in %s mode"), app.get("port"), app.get("env"));
+    console.log("[APP] Press CTRL-C to stop\n");
 });
 
 setInterval(() => {

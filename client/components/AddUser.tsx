@@ -102,7 +102,6 @@ export default class Navbar extends React.Component<{userId?: Object},{error: an
                     })
                 });
         }
-
     }
 
     readonly userSelectChange = (e: any) => {
