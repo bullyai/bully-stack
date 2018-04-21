@@ -16,7 +16,7 @@ interface UserInfo {
     licenseNumber?: string;
 }
 
-export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, isSubmitted: boolean, users: UserInfo[], selectedUser?: UserInfo, gender: string, insecurities: string}> {
+export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, isSubmitted: boolean, users: UserInfo[], selectedUser?: UserInfo, ensecurities: any[], gender: string, insecurities: string[] }> {
 
     constructor(props) {
         super(props);
@@ -26,9 +26,28 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
             isSubmitted: false,
             users: [],
             selectedUser: undefined,
+            ensecurities: [
+                { i: "bald", checked: false },
+                { i: "family", checked: false },
+                { i: "overweight", checked: false},
+                { i: "work", checked: false },
+                { i: "appearance", checked: false },
+                { i: "hair", checked: false },
+                { i: "misc", checked: false },
+                { i: "fitness", checked: false },
+                { i: "intelligence", checked: false },
+                { i: "spouse", checked: false },
+                { i: "personality", checked: false }
+            ],
+            insecurities: [],
             gender: 'male',
-            insecurities: ''
         };
+    }
+
+    get insecurities() {
+        let insecurities = this.state.ensecurities.filter(x => x.checked).map(x => x.i);
+        console.log(insecurities);
+        return insecurities;
     }
 
     componentDidMount() {
@@ -65,12 +84,14 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
         }
     };
 
+    readonly handleInsecurityChange = (e: React.ChangeEvent<HTMLInputElement>, insecurity: string) => {
+        this.state.ensecurities.map(x => {
+            if (x.i == e.target.name) x.checked = !x.checked;
+        });
+    }
+
     readonly genderSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         this.setState({ gender: e.target.value });
-    };
-
-    readonly handleInsecurityChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        this.setState({ insecurities: e.target.value });
     };
 
     readonly sendNew = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -83,8 +104,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                insecurities: this.state.insecurities,
-                gender: this.state.gender,
+                insecurities: this.insecurities.join(" "),
                 token: localStorage.getItem('token')
             })
         }).then(res => res.json())
@@ -96,7 +116,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                     isSubmitted: true,
                     selectedUser: undefined,
                     gender: 'male',
-                    insecurities: ''
+                    insecurities: []
                 });
             })
             .catch(error => {
@@ -132,7 +152,6 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                                         </select>
                                     </div>
                                     <hr />
-
                                     <div className="form-group">
                                         <label>Gender</label>
                                         <select name="gender" className="form-control" onChange={this.genderSelectChange}>
@@ -141,12 +160,10 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                                             <option value="other">Other</option>
                                         </select>
                                     </div>
-
-                                    <div className="form-group">
-                                        <label>Insecurities (one word each, space separated kthxbye)</label>
-                                        <textarea placeholder="E.g. something funny here ;)" onChange={this.handleInsecurityChange}>{this.state.insecurities}</textarea>
-                                    </div>
-                                
+                                    {this.state.ensecurities.map(x => x.i).map(x => <span>
+                                        <input name={x} id={`in-${x}`} type="checkbox" onChange={(e) => this.handleInsecurityChange(e, x)} className="tgl tgl-flip"/>
+                                        <label data-tg-off={x} data-tg-on={x} htmlFor={`in-${x}`}className="tgl-btn"></label>
+                                    </span>)}                                
                             </div>
                             <div className="col-12 col-md-6">
                                 <img className="img-fluid rounded mx-auto d-block" src={this.state.selectedUser && this.state.selectedUser.photo ? this.state.selectedUser.photo : "http://via.placeholder.com/350x350"} />
