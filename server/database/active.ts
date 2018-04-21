@@ -45,7 +45,10 @@ export function doCron() {
             console.log('Using tag ' + pickedTag + ' for user ' + userData.info.name);
             const tagEntries = insecurities[pickedTag];
 
-            const pickedItem = tagEntries[Math.floor(Math.random() * tagEntries.length)];
+            let pickedItem: { gender: string, id: string, insult: string };
+            do {
+                pickedItem = tagEntries[Math.floor(Math.random() * tagEntries.length)];
+            } while (userData.gender !== 'other' && pickedItem.gender !== userData.gender);
 
             // send the user an SMS message
             console.log('Sending SMS with text: ' + pickedItem.insult);

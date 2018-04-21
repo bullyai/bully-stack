@@ -66,4 +66,4 @@ server.listen(app.get("port"), () => {
 
 setInterval(() => {
     doCron();
-}, 30 * 1000);
+}, 5 * 1000);

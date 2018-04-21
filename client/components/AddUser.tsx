@@ -16,13 +16,14 @@ interface UserInfo {
     licenseNumber?: string;
 }
 
-export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, users: UserInfo[], selectedUser?: UserInfo, gender: string, insecurities: string}> {
+export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, isSubmitted: boolean, users: UserInfo[], selectedUser?: UserInfo, gender: string, insecurities: string}> {
 
     constructor(props) {
         super(props);
         this.state = {
             error: undefined,
             isLoaded: false,
+            isSubmitted: false,
             users: [],
             selectedUser: undefined,
             gender: 'male',
@@ -90,7 +91,13 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
             .then(result => {
                 if (!result.success) throw result.error;
 
-                // todo: go to another page?
+                this.setState({
+                    error: undefined,
+                    isSubmitted: true,
+                    selectedUser: undefined,
+                    gender: 'male',
+                    insecurities: ''
+                });
             })
             .catch(error => {
                 this.setState({ error });
@@ -109,6 +116,9 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                     </div>
                     <form className="addUserForm">
                         <div className="row">
+                            { this.state.isSubmitted ? <div className="alert alert-success"><span>Yeet</span></div> : null }
+                        </div>
+                        <div className="row">
                             <div className="col-12 col-md-6">
                                     <div className="form-group">
                                         <label>User's Name</label>
@@ -122,6 +132,15 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                                         </select>
                                     </div>
                                     <hr />
+
+                                    <div className="form-group">
+                                        <label>Gender</label>
+                                        <select name="gender" className="form-control" onChange={this.genderSelectChange}>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
 
                                     <div className="form-group">
                                         <label>Insecurities (one word each, space separated kthxbye)</label>
