@@ -17,10 +17,11 @@ interface UserInfo {
     licenseNumber?: string;
 }
 
-export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, isSubmitted: boolean, users: UserInfo[], selectedUser?: UserInfo, ensecurities: any[], gender: string, insecurities: string[] }> {
+export default class Navbar extends React.Component<{userId?: Object},{error: any, isLoaded: boolean, isSubmitted: boolean, users: UserInfo[], selectedUser?: UserInfo, ensecurities: any[], gender: string, insecurities: string[] }> {
 
     constructor(props) {
         super(props);
+
         this.state = {
             error: undefined,
             isLoaded: false,
@@ -52,6 +53,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
     }
 
     componentDidMount() {
+        console.log('AddUse rmounted');
 
         fetch(`http://localhost:3000/api/users?token=${localStorage.getItem('token')}`, {
             method: 'GET'
@@ -61,6 +63,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                 if (!result.success) throw result.error;
 
                 this.setState({
+                    isSubmitted: false,
                     isLoaded: true,
                     users: result.users
                 });
@@ -70,7 +73,36 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                 isLoaded: true,
                 error
             });
-        })
+        });
+
+        if (this.props.userId) {
+            console.log('userId = ' + this.props.userId);
+            fetch(`http://localhost:3000/api/active/${this.props.userId}?token=${localStorage.getItem('token')}`, {
+                method: 'GET'
+            }).then(res => res.json())
+                .then(result => {
+                    console.log('Got the state!');
+                    if (!result.success) throw result.error;
+
+                    const newState = {
+                        selectedUser: result.data.info,
+                        ensecurities: this.state.ensecurities.map(i => {
+                            return { i: i.i, checked: result.data.tags.indexOf(i.i) !== -1 };
+                        }),
+                        gender: result.data.gender
+                    };
+                    console.log('Setting state:', newState);
+                    console.log('Old data was:', result.data);
+                    this.setState(newState);
+                })
+                .catch(error => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    })
+                });
+        }
+
     }
 
     readonly userSelectChange = (e: any) => {
@@ -106,7 +138,8 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
             },
             body: JSON.stringify({
                 insecurities: this.insecurities.join(" "),
-                token: localStorage.getItem('token')
+                token: localStorage.getItem('token'),
+                gender: this.state.gender
             })
         }).then(res => res.json())
             .then(result => {
@@ -155,15 +188,15 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                                     <hr />
                                     <div className="form-group">
                                         <label>Gender</label>
-                                        <select name="gender" className="form-control" onChange={this.genderSelectChange}>
+                                        <select name="gender" className="form-control" value={this.state.gender} onChange={this.genderSelectChange}>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                             <option value="other">Other</option>
                                         </select>
                                     </div>
-                                    {this.state.ensecurities.map(x => x.i).map(x => <span>
-                                        <input name={x} id={`in-${x}`} type="checkbox" onChange={(e) => this.handleInsecurityChange(e, x)} className="tgl tgl-flip"/>
-                                        <label data-tg-off={x} data-tg-on={x} htmlFor={`in-${x}`}className="tgl-btn"></label>
+                                    {this.state.ensecurities.map(x => <span>
+                                        <input name={x.i} id={`in-${x.i}`} type="checkbox" onChange={(e) => this.handleInsecurityChange(e, x.i)} defaultChecked={x.checked} className="tgl tgl-flip"/>
+                                        <label data-tg-off={x.i} data-tg-on={x.i} htmlFor={`in-${x.i}`}className="tgl-btn"></label>
                                     </span>)}                                
                             </div>
                             <div className="col-12 col-md-6">

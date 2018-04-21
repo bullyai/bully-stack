@@ -15,6 +15,13 @@ export function listActive(token: string) {
     else return Array.from(entry.values());
 }
 
+export function getActive(token: string, userId: number) {
+    const entry = activeItems.get(token);
+    if (!entry) return;
+
+    return entry.get(userId);
+}
+
 export function addActive(token: string, userId: number, data: UserData) {
     const maybeEntry = activeItems.get(token);
 
@@ -42,7 +49,7 @@ export function doCron() {
     activeItems.forEach((users, token) => {
         users.forEach((userData, userId) => {
             const pickedTag = userData.tags[Math.floor(Math.random() * userData.tags.length)];
-            console.log('Using tag ' + pickedTag + ' for user ' + userData.info.name);
+            console.log('Using tag ' + pickedTag + ' for user ' + userData.info.name + ' [out of ' + userData.tags + ']');
             const tagEntries = insecurities[pickedTag];
 
             let pickedItem: { gender: string, id: string, insult: string };

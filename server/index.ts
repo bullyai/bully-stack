@@ -52,8 +52,8 @@ app.all('*', (req, res, next) => {
 import { routes } from "./routes";
 import { apiRoutes } from "./api";
 import { doCron } from './database/active';
-app.use('/', routes);
 app.use('/api', apiRoutes);
+app.use('/', routes);
 
 app.use(errorHandler());
 

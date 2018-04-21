@@ -58,6 +58,7 @@ class Dashboard extends React.Component<{},{error: any, isLoaded: boolean, users
     }
 
     componentDidMount() {
+        console.log('Home mounted');
         fetch(`http://localhost:3000/api/active?token=${localStorage.getItem('token')}`, {
             method: 'GET'
         })

@@ -15,13 +15,17 @@ export default class App extends React.Component {
         super(props);
     }
 
+    readonly showAddUser = (match: any) => {
+        return <AddUser userId={match.match.params.id}/>;
+    };
+
     render(){
         return(
             <Router>
                 <Navbar>
                     <Route exact path="/" component={Home} />
-                    <Route path="/adduser" component={AddUser} />
-                    <Route path="/adduser/:id" component={AddUser} />
+                    <Route path="/adduser" exact component={AddUser} />
+                    <Route path="/adduser/:id" exact component={this.showAddUser} />
                     <Route path="/login" component={Login} />
                 </Navbar>
             </Router>

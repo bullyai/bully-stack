@@ -6,6 +6,6 @@ export { routes };
 
 // General
 // ----------------------------------------------------------------------------
-routes.get('/', (req: Request, res: Response) => {
+routes.get('/*', (req: Request, res: Response) => {
     res.sendFile(path.resolve(__dirname, "./../client/main.html"));
 });

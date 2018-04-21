@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { getToken, getUser, listAvailableUsers } from './external/index';
-import { addActive, listActive, removeActive } from './database/active';
+import { addActive, getActive, listActive, removeActive } from './database/active';
 
 const apiRoutes = Router();
 export { apiRoutes };
@@ -44,6 +44,23 @@ apiRoutes.get('/active', async (req: Request, res: Response) => {
         success: true,
         users: listActive(req.query.token)
     });
+});
+
+// GET parameters: {token}
+apiRoutes.get('/active/:userId', async (req: Request, res: Response) => {
+    try {
+        const result = getActive(req.query.token, req.params.userId);
+        if (!result) throw new Error("No");
+        res.json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        res.json({
+            success: false,
+            error: error.message
+        });
+    }
 });
 
 // POST parameters: {insecurty, gender, token}
