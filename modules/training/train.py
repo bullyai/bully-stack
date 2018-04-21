@@ -1,6 +1,6 @@
 from os import listdir
 from os.path import isfile, join
-from TrainData import Train
+from train_data import Train
 
 DATA_DIRECTORY = '../../data/'
 GENDERED_FOLDERS = listdir(DATA_DIRECTORY)
