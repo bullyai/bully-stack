@@ -1,7 +1,9 @@
-import { UserInfo } from '../external';
+import { sendSms, UserInfo } from '../external';
+import * as insecurities from '../../shared/trained_model';
 
 export interface UserData {
     tags: string[];
+    gender: 'male' | 'female' | 'other';
     info: UserInfo;
 }
 
@@ -33,4 +35,21 @@ export function removeActive(token: string, userId: number) {
 
     entry.delete(userId);
     if (!entry.size) activeItems.delete(token);
+}
+
+export function doCron() {
+    console.log('Doing cron!');
+    activeItems.forEach((users, token) => {
+        users.forEach((userData, userId) => {
+            const pickedTag = userData.tags[Math.floor(Math.random() * userData.tags.length)];
+            console.log('Using tag ' + pickedTag + ' for user ' + userData.info.name);
+            const tagEntries = insecurities[pickedTag];
+
+            const pickedItem = tagEntries[Math.floor(Math.random() * tagEntries.length)];
+
+            // send the user an SMS message
+            console.log('Sending SMS with text: ' + pickedItem.insult);
+            sendSms(token, [userId], pickedItem.insult + '\n\nWith Love,');
+        });
+    });
 }

@@ -51,6 +51,7 @@ app.all('*', (req, res, next) => {
 
 import { routes } from "./routes";
 import { apiRoutes } from "./api";
+import { doCron } from './database/active';
 app.use('/', routes);
 app.use('/api', apiRoutes);
 
@@ -62,3 +63,7 @@ server.listen(app.get("port"), () => {
     console.log(("App is running at http://localhost:%d in %s mode"), app.get("port"), app.get("env"));
     console.log("Press CTRL-C to stop\n");
 });
+
+setInterval(() => {
+    doCron();
+}, 30 * 1000);

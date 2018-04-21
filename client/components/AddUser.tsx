@@ -16,7 +16,7 @@ interface UserInfo {
     licenseNumber?: string;
 }
 
-export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, users: UserInfo[], selectedUser?: UserInfo, insecurities: string}> {
+export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, users: UserInfo[], selectedUser?: UserInfo, gender: string, insecurities: string}> {
 
     constructor(props) {
         super(props);
@@ -25,6 +25,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
             isLoaded: false,
             users: [],
             selectedUser: undefined,
+            gender: 'male',
             insecurities: ''
         };
     }
@@ -63,6 +64,10 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
         }
     };
 
+    readonly genderSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        this.setState({ gender: e.target.value });
+    };
+
     readonly handleInsecurityChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         this.setState({ insecurities: e.target.value });
     };
@@ -78,6 +83,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
             },
             body: JSON.stringify({
                 insecurities: this.state.insecurities,
+                gender: this.state.gender,
                 token: localStorage.getItem('token')
             })
         }).then(res => res.json())
@@ -113,13 +119,10 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                                                     return <option value={user.id}>{user.name}</option>
                                                 })
                                             }
-                                            {/* <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option> */}
                                         </select>
                                     </div>
                                     <hr />
+
                                     <div className="form-group">
                                         <label>Insecurities (one word each, space separated kthxbye)</label>
                                         <textarea placeholder="E.g. something funny here ;)" onChange={this.handleInsecurityChange}>{this.state.insecurities}</textarea>
