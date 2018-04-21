@@ -11,6 +11,7 @@ import * as compression from "compression";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as passport from "passport";
+import * as cors from "cors";
 
 import * as logger from "morgan";
 import * as errorHandler from "errorhandler";
@@ -18,6 +19,7 @@ import * as errorHandler from "errorhandler";
 // Server Configuration
 // ----------------------------------------------------------------------------
 app.set("port", process.env.PORT || 3000);
+app.use(cors({ origin: true }));
 // Static content delivery compression
 app.use(compression());
 // URL/URI and HTTP content decoding and parsing

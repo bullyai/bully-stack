@@ -51,7 +51,7 @@ apiRoutes.get('/active', async (req: Request, res: Response) => {
 apiRoutes.put('/active/:userId', async (req: Request, res: Response) => {
     try {
         let tags = new Set<string>();
-        const insecurities = req.body.insecurities.split(/\s+/);
+        const insecurities = req.body.insecurities.toLowerCase().split(/\s+/);
         for (const insecurity of insecurities) {
             if (tagMap[insecurity]) tags.add(tagMap[insecurity]);
         }

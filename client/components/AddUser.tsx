@@ -16,46 +16,80 @@ interface UserInfo {
     licenseNumber?: string;
 }
 
-export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, users: UserInfo[], selectedUser: any}> {
+export default class Navbar extends React.Component<{nav: Object},{error: any, isLoaded: boolean, users: UserInfo[], selectedUser?: UserInfo, insecurities: string}> {
 
     constructor(props) {
         super(props);
         this.state = {
             error: undefined,
             isLoaded: false,
-            users: undefined,
-            selectedUser: undefined
+            users: [],
+            selectedUser: undefined,
+            insecurities: ''
         };
     }
 
     componentDidMount() {
 
-        fetch("https://localhost:3000/api/user", {
-            method: 'POST',
-            body: `token=${localStorage.getItem('token')}`
+        fetch(`http://localhost:3000/api/users?token=${localStorage.getItem('token')}`, {
+            method: 'GET'
         })
         .then(res => res.json())
-        .then(
-            (result) => {
+        .then((result) => {
+                if (!result.success) throw result.error;
+
                 this.setState({
                     isLoaded: true,
-                    users: result.user 
+                    users: result.users
                 });
-            },
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error
-                });
-            }
-        )
+            })
+        .catch(error => {
+            this.setState({
+                isLoaded: true,
+                error
+            });
+        })
     }
 
-    userSelectChange(e: any){
-        this.setState({
-            selectedUser: e.target.value
-        });
-    }
+    readonly userSelectChange = (e: any) => {
+        for (const user of this.state.users) {
+            console.log(user.id, e.target.value);
+            if (user.id.toString() === e.target.value) {
+                this.setState({
+                    selectedUser: user
+                });
+                break;
+            }
+        }
+    };
+
+    readonly handleInsecurityChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        this.setState({ insecurities: e.target.value });
+    };
+
+    readonly sendNew = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        if (!this.state.selectedUser) return;
+        fetch(`http://localhost:3000/api/active/${this.state.selectedUser.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                insecurities: this.state.insecurities,
+                token: localStorage.getItem('token')
+            })
+        }).then(res => res.json())
+            .then(result => {
+                if (!result.success) throw result.error;
+
+                // todo: go to another page?
+            })
+            .catch(error => {
+                this.setState({ error });
+            })
+    };
 
     render(){
         return (
@@ -75,7 +109,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                                         {/* <input type="name" className="form-control" id="inputName" placeholder="Enter User's Name"></input> */}
                                         <select name="name" className="form-control" onChange={this.userSelectChange}>
                                             {
-                                                this.state.users.forEach((user: UserInfo) => {
+                                                this.state.users.map((user: UserInfo) => {
                                                     return <option value={user.id}>{user.name}</option>
                                                 })
                                             }
@@ -87,22 +121,13 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                                     </div>
                                     <hr />
                                     <div className="form-group">
-                                        <label >Insecurity One</label>
-                                        <input type="password" className="form-control" id="inputInsecurityOne" placeholder="Afraid of being called fat"></input>
+                                        <label>Insecurities (one word each, space separated kthxbye)</label>
+                                        <textarea placeholder="E.g. something funny here ;)" onChange={this.handleInsecurityChange}>{this.state.insecurities}</textarea>
                                     </div>
-                                    <div className="form-group">
-                                        <label >Insecurity Two</label>
-                                        <input type="password" className="form-control" id="inputInsecurityTwo" placeholder="Dislikes their nose"></input>
-                                    </div>
-                                    <div className="form-group">
-                                        <label >Insecurity Three</label>
-                                        <input type="password" className="form-control" id="inputInsecurityThree" placeholder="Hates couches"></input>
-                                    </div>
-                                    
                                 
                             </div>
                             <div className="col-12 col-md-6">
-                                <img className="img-fluid rounded mx-auto d-block" src={this.state.selectedUser.photo || "http://via.placeholder.com/350x350"} />
+                                <img className="img-fluid rounded mx-auto d-block" src={this.state.selectedUser && this.state.selectedUser.photo ? this.state.selectedUser.photo : "http://via.placeholder.com/350x350"} />
                                 <hr />
                                 <button type="" className="btn btn-primary btn-block">Change Image</button>
                             </div>
@@ -111,7 +136,7 @@ export default class Navbar extends React.Component<{nav: Object},{error: any, i
                             <div className="col-12">
                                 { this.state.error ? <div className="alert alert-danger"><span>Error: ${this.state.error}</span></div> : null }
                                 <hr />
-                                <button type="submit" className="btn btn-primary">Submit</button>
+                                <button type="submit" className="btn btn-primary" onClick={this.sendNew}>Submit</button>
                             </div>
                         </div>
                     </form>

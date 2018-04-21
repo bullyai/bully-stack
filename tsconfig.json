@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "sourceMap": true,
-        "outDir": "./server/dist",
+        "outDir": "./dist",
         "jsx": "react",
         "preserveConstEnums": true,
         "removeComments": true,
@@ -10,7 +10,7 @@
     },
     "exclude": [
         "node_modules",
-        "./server/dist/**/*",
+        "./dist/**/*",
     ],
     "include": [
         "./server/**/*",

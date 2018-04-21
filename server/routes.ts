@@ -7,5 +7,5 @@ export { routes };
 // General
 // ----------------------------------------------------------------------------
 routes.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.resolve(__dirname, "./../../client/main.html"));
+    res.sendFile(path.resolve(__dirname, "./../client/main.html"));
 });

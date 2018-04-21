@@ -1,46 +1,53 @@
 import * as React from 'react';
-import { Link } from "react-router-dom";
-import { withCookies, Cookies } from 'react-cookie';
 
 // Styles
 import "./Login.less";
 
-export default class Login extends React.Component<{},{email: string, password: string, error: string}> {
+export default class Login extends React.Component<{},{email: string, password: string, error?: string}> {
 
     constructor (props: any) {
         super(props);
         this.state = {
-            email: undefined,
-            password: undefined,
+            email: "",
+            password: "",
             error: undefined
         }
     }
 
-    handleEmailChange (e: any) {
+    readonly handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({email: e.target.value});
-    }
+    };
 
-    handlePasswordChange(e: any) {
+    readonly handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({password: e.target.value});
-    }
+    };
 
-    sendLoginInfo() {
+    readonly sendLoginInfo = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
         // Getting username and password
-        fetch("https://localhost:3000/api/login", {
+        console.log('Sending state:', this.state);
+        fetch("http://localhost:3000/api/login", {
             method: 'POST',
-            body: `username=${this.state.email}&password=${this.state.password}`
-        })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                localStorage.setItem('token', result.token);
+            headers: {
+                'Content-Type': 'application/json'
             },
-            (error) => {
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password
+            })
+        })
+            .then(res => res.json())
+            .then((result) => {
+                    if (!result.success) throw result.error;
+                    console.log('oy');
+                    localStorage.setItem('token', result.token);
+                })
+            .catch(error => {
                 console.log(`Error in fetching token: \n\t ${error}`);
                 this.setState({ error });
-            }
-        )
-    }
+            })
+    };
 
     render() {
         return (
@@ -61,7 +68,7 @@ export default class Login extends React.Component<{},{email: string, password: 
                                 <label>Tanda Password</label>
                                 <input type="password" className="form-control" id="inputPassword" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange}></input>
                             </div>
-                            { this.state.error ? <div className="alert alert-danger"><span>Error: ${this.state.error}</span></div> : null }
+                            { this.state.error ? <div className="alert alert-danger"><span>Error: {this.state.error}</span></div> : null }
                             <button onClick={this.sendLoginInfo} className="btn btn-primary">Submit</button>
                         </form>
                     </div>
