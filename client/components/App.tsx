@@ -21,7 +21,8 @@ export default class App extends React.Component {
                 <Navbar>
                     <Route exact path="/" component={Home} />
                     <Route path="/adduser" component={AddUser} />
-                    <Route path="/login" component={AddUser} />
+                    <Route path="/adduser/:id" component={AddUser} />
+                    <Route path="/login" component={Login} />
                 </Navbar>
             </Router>
         )
