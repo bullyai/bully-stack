@@ -1,7 +1,7 @@
 import { UserInfo } from '../external';
 
 export interface UserData {
-    insecurities: string[];
+    tags: string[];
     info: UserInfo;
 }
 
