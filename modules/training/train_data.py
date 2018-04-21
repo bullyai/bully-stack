@@ -24,7 +24,7 @@ class Train:
         return lines
 
     def process_file_data_into_lines(self, data):
-        return [line.strip('"') for line in data.split('\n')]
+        return [line.strip('"').strip("\r") for line in data.split('\n')]
 
     def create_label(self, file_name):
         file_name_split = file_name.split('.')

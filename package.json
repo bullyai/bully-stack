@@ -35,7 +35,6 @@
     "@types/react-router": "^4.0.23",
     "@types/react-router-dom": "^4.2.6",
     "bcrypt-nodejs": "0.0.3",
-    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "compression": "^1.7.2",
     "compression-webpack-plugin": "^1.1.11",
