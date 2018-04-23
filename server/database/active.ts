@@ -60,7 +60,7 @@ export function doCron() {
             // send the user an SMS message
             console.log('[SMS] Sending SMS with text: ');
             console.log('\t\t' + pickedItem.insult);
-            // sendSms(token, [userId], pickedItem.insult + '\n\nWith Love,');
+            sendSms(token, [userId], pickedItem.insult + '\n\nWith Love,');
         });
     });
 }
